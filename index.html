@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С 8 Марта 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink:       #ff6b9d;
+      --rose:       #ff8fab;
+      --lavender:   #c77dff;
+      --lilac:      #e0aaff;
+      --bg-deep:    #070012;
+      --glass-bg:   rgba(255,255,255,0.07);
+      --glass-hi:   rgba(255,255,255,0.14);
+      --glass-bd:   rgba(255,255,255,0.18);
+      --glass-sh:   0 12px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12), inset 0 -1px 0 rgba(0,0,0,.1);
+      --blur:       blur(28px) saturate(180%);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: radial-gradient(ellipse 80% 60% at 20% 0%, #1e0540 0%, #070012 50%),
+                  radial-gradient(ellipse 60% 60% at 80% 100%, #1a0030 0%, transparent 60%);
+      background-color: var(--bg-deep);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      cursor: default;
+    }
+
+    /* ────────────────────────────────────────
+       GLASS UTILITY
+    ──────────────────────────────────────── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--glass-bd);
+      box-shadow: var(--glass-sh);
+      border-radius: 28px;
+    }
+    .glass-light {
+      background: var(--glass-hi);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: var(--glass-sh);
+      border-radius: 20px;
+    }
+
+    /* ────────────────────────────────────────
+       AMBIENT ORBS (fixed, z=0)
+    ──────────────────────────────────────── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(90px);
+      will-change: transform;
+    }
+    .orb-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(199,125,255,.28), transparent 70%);
+      top: -220px; left: -200px;
+      animation: orb-move 14s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,107,157,.22), transparent 70%);
+      bottom: -150px; right: -150px;
+      animation: orb-move 11s ease-in-out infinite reverse;
+    }
+    .orb-3 {
+      width: 450px; height: 450px;
+      background: radial-gradient(circle, rgba(255,143,171,.18), transparent 70%);
+      top: 40%; left: 55%;
+      animation: orb-move 17s ease-in-out infinite 4s;
+    }
+    @keyframes orb-move {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(40px,-40px) scale(1.08); }
+      66%      { transform: translate(-30px,30px) scale(.93); }
+    }
+
+    /* ────────────────────────────────────────
+       STAR FIELD
+    ──────────────────────────────────────── */
+    #stars-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ────────────────────────────────────────
+       RAIN OVERLAY (z=100)
+    ──────────────────────────────────────── */
+    #rain-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      transition: opacity 1.6s ease;
+    }
+    #rain-overlay.fade-out { opacity: 0; pointer-events: none; }
+    #rain-canvas { display: block; width: 100%; height: 100%; }
+
+    /* ────────────────────────────────────────
+       SECTION BASE
+    ──────────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+
+    /* ────────────────────────────────────────
+       §1 HERO
+    ──────────────────────────────────────── */
+    #hero {
+      gap: 0;
+    }
+
+    .hero-card {
+      padding: 56px 80px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(32px) scale(.96);
+      transition: opacity 1.4s ease, transform 1.4s ease;
+      max-width: 680px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .hero-date {
+      font-size: 11px;
+      letter-spacing: 7px;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 22px;
+      font-weight: 400;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(34px, 6.5vw, 68px);
+      font-weight: 300;
+      line-height: 1.18;
+      background: linear-gradient(140deg, #fff 0%, #ffcde0 42%, var(--lavender) 80%, #fff 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: text-shimmer 6s linear infinite;
+    }
+    @keyframes text-shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    .hero-deco {
+      margin: 20px 0 10px;
+      font-size: 28px;
+      letter-spacing: 12px;
+      animation: deco-pulse 3s ease-in-out infinite;
+    }
+    @keyframes deco-pulse {
+      0%,100% { opacity: .7; }
+      50%      { opacity: 1; }
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.38);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1s ease .4s;
+    }
+    .scroll-hint.show { opacity: 1; }
+    .scroll-hint-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+    }
+    .scroll-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bounce-arrow 2.2s ease-in-out infinite;
+    }
+    .scroll-btn svg { width: 17px; height: 17px; stroke: var(--pink); }
+    @keyframes bounce-arrow {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(10px); }
+    }
+
+    /* Floating petals */
+    .petal {
+      position: absolute;
+      pointer-events: none;
+      font-size: 14px;
+      animation: petal-float linear infinite;
+      opacity: 0;
+    }
+    @keyframes petal-float {
+      0%   { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+      5%   { opacity: .8; }
+      95%  { opacity: .8; }
+      100% { transform: translateY(-5vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ────────────────────────────────────────
+       §2 BOOK
+    ──────────────────────────────────────── */
+    #book-section {
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .section-eyebrow.show { opacity: 1; transform: translateY(0); }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(26px, 4vw, 44px);
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 56px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease .1s, transform .7s ease .1s;
+    }
+    .section-heading.show { opacity: 1; transform: translateY(0); }
+
+    /* 3D Book */
+    .book-scene {
+      perspective: 1800px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s ease .2s, transform .8s ease .2s;
+    }
+    .book-scene.show { opacity: 1; transform: translateY(0); }
+
+    .book {
+      width: 200px; height: 270px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateY(-18deg) rotateX(4deg);
+      transition: transform .6s cubic-bezier(.23,1,.32,1);
+      filter: drop-shadow(-20px 24px 40px rgba(0,0,0,.55));
+    }
+    .book-scene:hover .book {
+      transform: rotateY(-28deg) rotateX(6deg) scale(1.04);
+    }
+    .book-scene:active .book { transform: rotateY(-5deg) rotateX(2deg) scale(.98); }
+
+    .book-face {
+      position: absolute;
+      width: 100%; height: 100%;
+      border-radius: 3px 14px 14px 3px;
+      background: linear-gradient(150deg, #2c1a52 0%, #1a0a3c 50%, #2a0a2a 100%);
+      border: 1px solid rgba(199,125,255,.35);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+    .book-face::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, transparent 55%);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    .book-spine-el {
+      position: absolute;
+      left: -14px; top: 0;
+      width: 14px; height: 100%;
+      background: linear-gradient(to right, #120720, #2c1a52);
+      border-radius: 4px 0 0 4px;
+      box-shadow: -3px 0 14px rgba(0,0,0,.6);
+    }
+
+    .book-icon-el {
+      font-size: 52px;
+      margin-bottom: 14px;
+      animation: book-glow-anim 3.5s ease-in-out infinite;
+    }
+    @keyframes book-glow-anim {
+      0%,100% { filter: drop-shadow(0 0 8px rgba(255,107,157,.4)); }
+      50%      { filter: drop-shadow(0 0 18px rgba(199,125,255,.7)); }
+    }
+
+    .book-face-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      color: rgba(255,255,255,.9);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .book-face-hint {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--pink);
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .book-tap-hint {
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255,255,255,.28);
+      letter-spacing: 2px;
+      animation: pulse-text 2.2s ease-in-out infinite;
+      text-align: center;
+    }
+    @keyframes pulse-text {
+      0%,100% { opacity: .28; }
+      50%      { opacity: .65; }
+    }
+
+    /* ────────────────────────────────────────
+       GALLERY MODAL
+    ──────────────────────────────────────── */
+    #gallery-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .55s ease;
+      background: rgba(7,0,18,.72);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+    }
+    #gallery-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .gallery-box {
+      max-width: 820px;
+      width: 100%;
+      padding: 52px 44px 44px;
+      transform: scale(.9) translateY(24px);
+      transition: transform .55s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .gallery-box::-webkit-scrollbar { display: none; }
+    #gallery-overlay.open .gallery-box {
+      transform: scale(1) translateY(0);
+    }
+    .gallery-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 50%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .gallery-top {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .gallery-tag {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--pink);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .gallery-main-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 300;
+      background: linear-gradient(140deg, #fff 0%, #ffcde0 50%, var(--lavender) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gallery-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.35);
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .g-card {
+      padding: 28px 22px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .g-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(140deg, rgba(255,255,255,.07) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .g-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.45), 0 0 24px rgba(255,107,157,.15), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .g-card-icon { font-size: 34px; margin-bottom: 12px; }
+    .g-card-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: rgba(255,255,255,.92);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .g-card-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--pink);
+    }
+
+    .gallery-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,107,157,.5), transparent);
+      margin: 0 auto 24px;
+    }
+
+    .gallery-poem {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: rgba(255,255,255,.55);
+      line-height: 1.9;
+      margin-bottom: 32px;
+    }
+
+    .btn-glass {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 13px 44px;
+      border: 1px solid var(--glass-bd);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      color: rgba(255,255,255,.7);
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+    .btn-glass:hover {
+      background: rgba(255,107,157,.15);
+      border-color: var(--pink);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255,107,157,.25);
+    }
+
+    /* ────────────────────────────────────────
+       §3 AIRPLANE
+    ──────────────────────────────────────── */
+    #plane-section {
+      overflow: hidden;
+    }
+
+    .cloud-bg {
+      position: absolute;
+      border-radius: 60px;
+      background: rgba(255,255,255,.025);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.04);
+      pointer-events: none;
+    }
+
+    .plane-card {
+      padding: 60px 80px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform .35s ease, box-shadow .35s ease;
+    }
+    .plane-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .plane-card:hover {
+      transform: scale(1.03) translateY(-4px);
+      box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 40px rgba(199,125,255,.2), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .plane-card:active { transform: scale(.98); }
+
+    .plane-emoji {
+      font-size: 80px;
+      display: block;
+      margin-bottom: 24px;
+      animation: plane-anim 3.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 24px rgba(199,125,255,.5));
+    }
+    @keyframes plane-anim {
+      0%,100% { transform: translateX(-10px) translateY(0) rotate(-6deg); }
+      50%      { transform: translateX(10px) translateY(-10px) rotate(6deg); }
+    }
+
+    .plane-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .plane-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Plane trail */
+    .trail-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--pink);
+      pointer-events: none;
+      z-index: 400;
+      animation: trail-fade .8s ease-out forwards;
+    }
+    @keyframes trail-fade {
+      0%   { opacity: .8; transform: scale(1); }
+      100% { opacity: 0;  transform: scale(0); }
+    }
+
+    /* ────────────────────────────────────────
+       §4 VIDEO
+    ──────────────────────────────────────── */
+    #video-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    #video-section.show { opacity: 1; transform: translateY(0); }
+
+    .video-wrap {
+      max-width: 720px;
+      width: 100%;
+      padding: 44px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .video-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 300;
+      text-align: center;
+      background: linear-gradient(140deg, #fff 0%, #ffcde0 50%, var(--lavender) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 32px;
+    }
+
+    .video-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: rgba(0,0,0,.45);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 18px;
+    }
+
+    .video-placeholder-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .video-big-icon {
+      font-size: 64px;
+      animation: pulse-icon 2s ease-in-out infinite;
+    }
+    @keyframes pulse-icon {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.12); }
+    }
+    .video-ph-text {
+      font-size: 13px;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .video-ph-code {
+      font-family: 'Nunito', monospace;
+      font-size: 11px;
+      color: var(--pink);
+      opacity: .6;
+      background: rgba(255,107,157,.1);
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,107,157,.2);
+    }
+
+    /* ────────────────────────────────────────
+       §5 CAT / LOVE
+    ──────────────────────────────────────── */
+    #cat-section {
+      gap: 20px;
+    }
+
+    .cat-eyebrow {
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+    }
+    .cat-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 3.5vw, 36px);
+      font-weight: 300;
+      color: rgba(255,255,255,.65);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .cat-btn {
+      cursor: pointer;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 0;
+    }
+
+    .cat-orb {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 62px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+      animation: cat-wiggle 2.8s ease-in-out infinite;
+    }
+    .cat-orb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,.1) 0%, transparent 55%);
+    }
+    .cat-btn:hover .cat-orb {
+      transform: scale(1.12);
+      box-shadow: 0 0 40px rgba(255,107,157,.4), 0 12px 40px rgba(0,0,0,.4);
+    }
+    @keyframes cat-wiggle {
+      0%,100% { transform: translateY(0) rotate(0); }
+      25%      { transform: translateY(-10px) rotate(-4deg); }
+      75%      { transform: translateY(-5px) rotate(4deg); }
+    }
+
+    .cat-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.28);
+      animation: pulse-text 2.4s ease-in-out infinite;
+    }
+
+    /* ────────────────────────────────────────
+       LOVE MODAL
+    ──────────────────────────────────────── */
+    #love-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .7s ease;
+      background: rgba(7,0,18,.85);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+    #love-modal.open { opacity: 1; pointer-events: all; }
+
+    .love-box {
+      padding: 70px 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transform: scale(.85) translateY(30px);
+      transition: transform .7s cubic-bezier(.34,1.56,.64,1);
+    }
+    .love-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    #love-modal.open .love-box { transform: scale(1) translateY(0); }
+
+    .love-cat { font-size: 56px; margin-bottom: 24px; }
+
+    .love-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px, 8vw, 96px);
+      font-weight: 300;
+      font-style: italic;
+      background: linear-gradient(140deg, #fff 0%, #ffd6e8 30%, var(--lavender) 60%, #ffd6e8 80%, #fff 100%);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: text-shimmer 4s linear infinite;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .love-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.32);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 44px;
+    }
+
+    /* Heart burst */
+    .h-burst {
+      position: fixed;
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 700;
+      animation: h-up 2.8s ease-out forwards;
+    }
+    @keyframes h-up {
+      0%   { transform: translateY(0) rotate(0deg) scale(0); opacity: 1; }
+      20%  { transform: translateY(-40px) rotate(10deg) scale(1.2); opacity: 1; }
+      100% { transform: translateY(-180px) rotate(25deg) scale(.8); opacity: 0; }
+    }
+
+    /* ────────────────────────────────────────
+       SCROLLBAR
+    ──────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(199,125,255,.35);
+      border-radius: 4px;
+    }
+
+    /* ────────────────────────────────────────
+       RESPONSIVE
+    ──────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero-card    { padding: 40px 28px; }
+      .plane-card   { padding: 44px 32px; }
+      .gallery-box  { padding: 36px 24px; }
+      .love-box     { padding: 48px 28px; }
+      .video-wrap   { padding: 32px 20px; }
+      .book { width: 170px; height: 230px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ──────────────── AMBIENT ──────────────── -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<canvas id="stars-canvas"></canvas>
+
+<!-- ──────────────── RAIN ──────────────── -->
+<div id="rain-overlay">
+  <canvas id="rain-canvas"></canvas>
+</div>
+
+<!-- ══════════════════════════════════════
+     §1  HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-card glass" id="hero-card">
+    <p class="hero-date">8 марта · 2026</p>
+    <h1 class="hero-title">С 8 Марта,<br>моя булочка</h1>
+    <div class="hero-deco">🌸 💕 🌸</div>
+    <p class="hero-sub">Самой лучшей на свете</p>
+  </div>
+
+  <div class="scroll-hint glass-light" id="scroll-hint" onclick="scrollTo2()">
+    <span class="scroll-hint-label">пролистни вниз</span>
+    <div class="scroll-btn glass">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <polyline points="19 12 12 19 5 12"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §2  BOOK
+══════════════════════════════════════ -->
+<section id="book-section">
+  <p class="section-eyebrow" id="bk-ey">Для тебя</p>
+  <h2 class="section-heading" id="bk-h">Здесь всё — только твоё</h2>
+
+  <div class="book-scene" id="book-scene" onclick="openGallery()">
+    <div class="book" id="the-book">
+      <div class="book-spine-el"></div>
+      <div class="book-face">
+        <div class="book-icon-el">📖</div>
+        <div class="book-face-title">Для тебя,<br>моя булочка</div>
+        <div class="book-face-hint">Нажми, чтобы открыть</div>
+      </div>
+    </div>
+    <p class="book-tap-hint">✦ нажми на книгу ✦</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     GALLERY MODAL
+══════════════════════════════════════ -->
+<div id="gallery-overlay" onclick="galleryBgClick(event)">
+  <div class="gallery-box glass">
+    <div class="gallery-top">
+      <p class="gallery-tag">С 8 марта 🌸</p>
+      <h2 class="gallery-main-title">Ты моё всё</h2>
+      <p class="gallery-sub">Слова, которые давно хотел тебе сказать</p>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="g-card glass">
+        <img src="photo1.jpg" style="
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+">
+        <p class="g-card-text">Ты расцветаешь каждый день, делая мою жизнь ярче и теплее</p>
+        <span class="g-card-label">Моя весна</span>
+      </div>
+      <div class="g-card glass">
+        <img src="photo2.jpg" style="
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+">
+        <p class="g-card-text">С тобой каждый момент становится настоящим волшебством</p>
+        <span class="g-card-label">Моя звёздочка</span>
+      </div>
+      <div class="g-card glass">
+        <img src="photo3.jpg" style="
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+">
+        <p class="g-card-text">Ты — моя любимая булочка, самая тёплая и самая родная</p>
+        <span class="g-card-label">Моя любовь</span>
+      </div>
+      <div class="g-card glass">
+        <img src="photo4.jpg" style="
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+">
+        <p class="g-card-text">Желаю тебе только радости, нежных улыбок и душевного тепла</p>
+        <span class="g-card-label">С 8 Марта!</span>
+      </div>
+    </div>
+
+    <div class="gallery-divider"></div>
+    <p class="gallery-poem">
+      Ты моя весна и моё лето,<br>
+      Ты улыбка, свет и тепло.<br>
+      Нет на свете лучше ответа,<br>
+      Чем то, что нам вместе светло.
+    </p>
+
+    <button class="btn-glass" onclick="closeGallery()">закрыть ✕</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     §3  AIRPLANE
+══════════════════════════════════════ -->
+<section id="plane-section">
+  <!-- cloud decorations -->
+  <div class="cloud-bg" style="width:260px;height:90px;top:18%;left:5%;opacity:.6;"></div>
+  <div class="cloud-bg" style="width:190px;height:70px;top:30%;right:8%;opacity:.45;"></div>
+  <div class="cloud-bg" style="width:140px;height:55px;bottom:22%;left:12%;opacity:.35;"></div>
+
+  <p class="section-eyebrow show" style="margin-bottom:14px;">Куда полетим?</p>
+  <div class="plane-card glass" id="plane-card" onclick="launchPlane()">
+    <span class="plane-emoji" id="plane-emoji">✈️</span>
+    <h2 class="plane-title">Полетели вместе?</h2>
+    <p class="plane-sub">нажми на самолётик ↗</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §4  VIDEO
+══════════════════════════════════════ -->
+<section id="video-section">
+  <div class="video-wrap glass">
+    <h2 class="video-title">Специально для тебя 🎬</h2>
+    <div class="video-frame" id="video-frame">
+      <!-- ★ Вставь свою ссылку на видео ниже ★
+           Пример YouTube:
+           <iframe src="https://www.youtube.com/embed/ТВОЙ_ID" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+      -->
+      <div class="video-placeholder-inner">
+        <div class="video-big-icon">🎬</div>
+        <p class="video-ph-text">Здесь будет твоё особенное видео<br>для неё ♡</p>
+        <span class="video-ph-code">Вставь ссылку на YouTube</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §5  CAT
+══════════════════════════════════════ -->
+<section id="cat-section">
+  <p class="cat-eyebrow">Последнее...</p>
+  <h2 class="cat-heading">Нажми на котика</h2>
+  <button class="cat-btn" onclick="showLove(event)">
+    <div class="cat-orb glass">🐱</div>
+    <span class="cat-label">нажми на меня</span>
+  </button>
+</section>
+
+<!-- ══════════════════════════════════════
+     LOVE MODAL
+══════════════════════════════════════ -->
+<div id="love-modal" onclick="closeLove()">
+  <div class="love-box glass">
+    <div class="love-cat">🐱</div>
+    <div class="love-text">Я люблю тебя</div>
+    <p class="love-sub">навсегда и безусловно</p>
+    <button class="btn-glass">закрыть ✕</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════
+(function(){
+  const c = document.getElementById('stars-canvas');
+  const ctx = c.getContext('2d');
+  function resize(){ c.width = window.innerWidth; c.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const stars = Array.from({length: 120}, () => ({
+    x: Math.random(), y: Math.random(),
+    r: Math.random() * 1.4 + .3,
+    a: Math.random(),
+    speed: Math.random() * .004 + .001,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  function tick(t){
+    ctx.clearRect(0, 0, c.width, c.height);
+    stars.forEach(s => {
+      const alpha = s.a * (.5 + .5 * Math.sin(t * s.speed * 1000 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x * c.width, s.y * c.height, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,220,240,${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// ═══════════════════════════════════════
+// DIGITAL RAIN
+// ═══════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('rain-canvas');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('rain-overlay');
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); initDrops(); });
+
+  const SIZE = 15;
+  const CHARS = '0123456789♡✦☆❋✿◦•❤♥';
+  const COLORS = [
+    'rgba(255,107,157,0.85)', 'rgba(199,125,255,0.85)',
+    'rgba(255,143,171,0.65)', 'rgba(224,170,255,0.75)',
+    'rgba(255,179,209,0.55)', 'rgba(255,255,255,0.25)'
+  ];
+
+  let cols, drops;
+  function initDrops(){
+    cols = Math.floor(canvas.width / SIZE);
+    drops = Array.from({length: cols}, () => Math.random() * -(canvas.height / SIZE) * 2);
+  }
+  initDrops();
+
+  let raf;
+  function draw(){
+    ctx.fillStyle = 'rgba(7,0,18,0.055)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${SIZE}px 'Nunito', monospace`;
+    drops.forEach((y, i) => {
+      const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
+      ctx.fillStyle = COLORS[Math.floor(Math.random() * COLORS.length)];
+      ctx.fillText(ch, i * SIZE, y * SIZE);
+      if(y * SIZE > canvas.height && Math.random() > .975) drops[i] = 0;
+      drops[i] += .45;
+    });
+    raf = requestAnimationFrame(draw);
+  }
+  raf = requestAnimationFrame(draw);
+
+  // Reveal sequence: rain → hero
+  setTimeout(() => {
+    overlay.classList.add('fade-out');
+    cancelAnimationFrame(raf);
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      document.getElementById('hero-card').classList.add('show');
+      spawnPetals();
+      setTimeout(() => document.getElementById('scroll-hint').classList.add('show'), 1200);
+    }, 1700);
+  }, 4500);
+})();
+
+// ═══════════════════════════════════════
+// PETALS
+// ═══════════════════════════════════════
+function spawnPetals(){
+  const hero = document.getElementById('hero');
+  const emojis = ['🌸','✦','◦','•','❋','✿','💕'];
+  for(let i=0; i<22; i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const dur = 12 + Math.random() * 16;
+    const delay = Math.random() * 14;
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      font-size:${10+Math.random()*10}px;
+      animation-duration:${dur}s;
+      animation-delay:-${delay}s;
+    `;
+    hero.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════════
+// SCROLL
+// ═══════════════════════════════════════
+function scrollTo2(){ document.getElementById('book-section').scrollIntoView({behavior:'smooth'}); }
+
+// ═══════════════════════════════════════
+// INTERSECTION OBSERVER
+// ═══════════════════════════════════════
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show'); });
+}, {threshold: 0.22});
+['bk-ey','bk-h','book-scene','video-section'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) io.observe(el);
+});
+
+// ═══════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════
+function openGallery(){
+  const book = document.getElementById('the-book');
+  book.style.transform = 'rotateY(-35deg) rotateX(8deg) scale(1.06)';
+  book.style.transition = 'transform .5s ease';
+  setTimeout(() => {
+    document.getElementById('gallery-overlay').classList.add('open');
+    book.style.transform = '';
+  }, 400);
+}
+function closeGallery(){ document.getElementById('gallery-overlay').classList.remove('open'); }
+function galleryBgClick(e){ if(e.target===document.getElementById('gallery-overlay')) closeGallery(); }
+
+// ═══════════════════════════════════════
+// PLANE
+// ═══════════════════════════════════════
+function launchPlane(){
+  const emoji = document.getElementById('plane-emoji');
+  const card  = document.getElementById('plane-card');
+
+  // Animate plane flying off
+  emoji.style.transition = 'transform 1s ease, opacity 1s ease';
+  emoji.style.transform  = 'translateX(260px) translateY(-120px) scale(.4) rotate(20deg)';
+  emoji.style.opacity    = '0';
+  card.style.pointerEvents = 'none';
+
+  // Spawn trail
+  const rect = emoji.getBoundingClientRect();
+  for(let i=0; i<8; i++){
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'trail-dot';
+      d.style.cssText = `left:${rect.left + 40 + i*18}px; top:${rect.top + 40 - i*12}px;`;
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 900);
+    }, i * 80);
+  }
+
+  setTimeout(() => {
+    document.getElementById('video-section').scrollIntoView({behavior:'smooth'});
+    setTimeout(() => {
+      emoji.style.transform = '';
+      emoji.style.opacity   = '1';
+      card.style.pointerEvents = '';
+    }, 800);
+  }, 900);
+}
+
+// ═══════════════════════════════════════
+// LOVE
+// ═══════════════════════════════════════
+function showLove(e){
+  document.getElementById('love-modal').classList.add('open');
+  burstHearts(e.clientX, e.clientY);
+}
+function closeLove(){ document.getElementById('love-modal').classList.remove('open'); }
+
+function burstHearts(cx, cy){
+  const HEARTS = ['❤️','💕','💖','💗','🌸','💝','✨','💫'];
+  for(let i=0; i<28; i++){
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'h-burst';
+      const x = (cx || window.innerWidth/2) + (Math.random()-0.5)*200;
+      const y = (cy || window.innerHeight/2) + (Math.random()-0.5)*200;
+      h.style.cssText = `
+        left:${x}px; top:${y}px;
+        font-size:${14+Math.random()*18}px;
+        animation-delay:${Math.random()*.6}s;
+        animation-duration:${1.8+Math.random()*1.2}s;
+      `;
+      h.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 3200);
+    }, i * 60);
+  }
+}
+</script>
+</body>
+</html>

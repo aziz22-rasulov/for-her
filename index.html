@@ -1021,15 +1021,12 @@
   <div class="video-wrap glass">
     <h2 class="video-title">Специально для тебя 🎬</h2>
     <div class="video-frame" id="video-frame">
-      <!-- ★ Вставь свою ссылку на видео ниже ★
-           Пример YouTube:
-           <iframe src="https://www.youtube.com/embed/ТВОЙ_ID" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-      -->
-      <div class="video-placeholder-inner">
-        <div class="video-big-icon">🎬</div>
-        <p class="video-ph-text">Здесь будет твоё особенное видео<br>для неё ♡</p>
-        <span class="video-ph-code">Вставь ссылку на YouTube</span>
-      </div>
+      <video
+        controls
+        style="width:100%; height:100%; border-radius:18px; object-fit:cover;"
+      >
+        <source src="video.mp4" type="video/mp4">
+      </video>
     </div>
   </div>
 </section>
